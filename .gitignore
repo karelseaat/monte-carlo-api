@@ -1,0 +1,142 @@
+/vendor
+/node_modules
+/.env
+/.phpunit.result.cache
+/.idea
+/public/storage
+/public/hot
+/public/storage
+/public/build
+/public/mix-manifest.json
+
+# Laravel IDE Helper
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+
+# Docker
+docker-compose.override.yml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+*.stackdump
+
+# PhpStorm
+.idea/
+
+# Yarn
+yarn-error.log
+.yarn-integrity
+
+# Composer
+composer.lock
+
+# Runtime files
+.env.testing
+.env.prod
+.env.staging
+
+# SQLite
+*.sqlite
+/database/*.sqlite
+
+# Logs
+/storage/logs/*.log
+!/storage/logs/.gitignore
+
+# Temp files
+*.tmp
+*.temp
+/tmp/*
+
+# Custom files
+.vscode/
+
+# IDE files
+.idea/
+.vscode/
+.history
+.sublime-workspace
+.metadata
+.project
+.buildpath
+.settings
+nbproject/
+*.kdev4
+.directory
+.pdt
+.komodoproject
+.gitattributes
+.gitmodules
+.gitkeep
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# dotenv
+.env
+.env.backup
+.env.*.local
+.env.local
+
+# portable PHP
+/app/
+/bootstrap/cache/
+/vendor/
+
+# composer ignore
+/composer.phar
+/composer.lock
+/vendor/
+/build/
+
+# IDE related
+.idea
+.vscode
+.history
+.buildpath
+.project
+.settings
+
+# node related
+node_modules
+npm-debug.log
+yarn-error.log
+.yarn-integrity
+
+# OS related
+.DS_Store
+Thumbs.db
+
+# PHPUnit
+.phpunit.result.cache
+phpunit.phar
+
+# other
+*.log
+*.sql
+*.sqlite
+
+# lumen
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+/storage/*
+!/storage/.gitignore
+!/storage/app/.gitignore
+!/storage/framework/.gitignore
+!/storage/logs/.gitignore
+
+# Nim specific
+/bin
+/nimcache
+*.nim.cfg
