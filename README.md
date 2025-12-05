@@ -1,152 +1,65 @@
-# Monte Carlo Simulation API with Nim and Lumen
+ # MonteCarloSimulation Lumen Project
 
-This project is a Lumen-based API that acts as a wrapper around a Monte Carlo simulation implemented in Nim. It allows users to submit a JSON input structure defining simulation parameters (labels with cost and chance) and receive a JSON output representing the simulation results, suitable for graph visualization.
+This repository contains a Lumen PHP framework project implementing a Monte Carlo Simulation service. The project is designed to provide developers with an efficient way to perform complex simulations involving random sampling, probability, and statistics.
 
-## Features
+## Prerequisites
 
-*   **Monte Carlo Simulation Core:** The simulation logic is implemented in Nim, offering excellent performance (10M simulations with 100 tasks in ~6 seconds).
-*   **Task-Level Analysis:** Per-task statistics showing occurrence rates, cost contributions, and variability.
-*   **Comprehensive Validation:** Input validation with detailed error messages (max 500 tasks, 100M simulations, custom cost/probability ranges).
-*   **Professional Error Handling:** Clear error responses (422 validation, 500 execution) with field-level details.
-*   **Clean Output Formatting:** Properly formatted numbers without scientific notation, ready-to-use data.
-*   **Graph Data Output:** Cumulative distribution points suitable for charting libraries.
-*   **Complete Documentation:** API.md with endpoint specs, examples, constraints, and result interpretation.
-*   **JSON Input/Output:** RESTful API with well-structured request/response formats.
+- PHP 8.1 or higher
+- Composer (for project dependency management)
 
-## Requirements
+## Installation
 
-*   PHP (>= 8.1)
-*   Composer
-*   Nim (to compile the simulation module)
-*   SQLite (optional, for Lumen's default setup; not central to core simulation logic)
-
-## Setup Instructions
-
-1.  **Clone the Repository (or create Lumen project):**
-    If you haven't already, create a new Lumen project:
-    ```bash
-    composer create-project --prefer-dist laravel/lumen monte-carlo-api
-    cd monte-carlo-api
-    ```
-
-2.  **Configure Environment:**
-    Create a `.env` file from the example:
-    ```bash
-    cp .env.example .env
-    ```
-    Edit your `.env` file to configure SQLite (if needed) and ensure necessary Lumen components are enabled in `bootstrap/app.php`:
-    ```
-    DB_CONNECTION=sqlite
-    DB_DATABASE=/path/to/your/project/database/database.sqlite
-    DB_FOREIGN_KEYS=true
-    ```
-    Also, ensure Eloquent and other necessary service providers are enabled in `bootstrap/app.php`:
-    ```php
-    // In bootstrap/app.php
-    $app->withFacades();
-    $app->withEloquent();
-    // No specific AppServiceProvider or AuthServiceProvider needed initially unless expanded
-    ```
-
-3.  **Create Database File (Optional):**
-    ```bash
-    touch database/database.sqlite
-    ```
-
-4.  **Install PHP Dependencies:**
-    ```bash
-    composer install
-    ```
-
-5.  **Nim Setup:**
-    *   **Install Nim:** If Nim is not installed on your system, follow the instructions on the [Nim-Lang website](https://nim-lang.org/install.html).
-    *   **Create Nim Module:** The Nim simulation code will reside in a file like `nim_src/monte_carlo_sim.nim`.
-    *   **Compile Nim Executable:**
-        ```bash
-        # From the project root (monte-carlo-api)
-        nim c -d:release --verbosity:0 --hints:off -o:bin/monte_carlo_sim nim_src/monte_carlo_sim.nim
-        ```
-        This compiles the Nim code into an executable at `bin/monte_carlo_sim`.
-
-## Running the Application
-
-To start the Lumen development server, run the following command from the project root:
+To get started, clone the repository and navigate to the project directory:
 
 ```bash
-php -S localhost:8000 -t public
+git clone https://github.com/yourusername/montecarlo_simulation.git
+cd montecarlo_simulation
 ```
 
-The API will be available at `http://localhost:8000`.
+Next, install the dependencies using Composer:
 
-## API Endpoints
+```bash
+composer install
+```
 
-### `POST /simulate`
+## Usage
 
-*   **Description:** Runs a Monte Carlo simulation based on the provided JSON input and returns graph data.
-*   **Request Body (JSON):**
-    ```json
-    {
-        "num_simulations": 10000,
-        "labels": [
-            { "name": "Task A", "cost": 10, "chance": 0.8 },
-            { "name": "Task B", "cost": 15, "chance": 0.6 },
-            { "name": "Task C", "cost": 5, "chance": 0.9 }
-        ]
-    }
-    ```
-    *   `num_simulations`: (integer, optional, default 10000) The number of Monte Carlo iterations.
-    *   `labels`: (array of objects) Each object must have:
-        *   `name`: (string) Identifier for the item.
-        *   `cost`: (numeric) Cost associated with the item.
-        *   `chance`: (numeric, 0.0-1.0) Probability of the item occurring.
-*   **Response (JSON - Example Structure):**
-    ```json
-    {
-        "simulation_results": {
-            "histogram": {
-                "min_cost": 0,
-                "max_cost": 30,
-                "bins": {
-                    "0-5": 500,
-                    "6-10": 1500,
-                    "11-15": 3000,
-                    "16-20": 2500,
-                    "21-25": 1000,
-                    "26-30": 500
-                }
-            },
-            "average_cost": 14.25,
-            "most_likely_cost_range": "11-15",
-            "percentile_90_cost": 23.5
-        },
-        "graph_data": [
-            // Array of data points suitable for charting libraries
-            { "x": 0, "y": 0.05 },
-            { "x": 5, "y": 0.15 },
-            { "x": 10, "y": 0.30 },
-            { "x": 15, "y": 0.25 },
-            { "x": 20, "y": 0.10 },
-            { "x": 25, "y": 0.05 }
-        ]
-    }
-    ```
-## Documentation
+The service can be accessed through a simple REST API. To run a simulation, send a POST request to `/api/simulate`, providing the JSON input data as the request body. The response will contain the results of the simulation.
 
-For complete API documentation including request/response examples, constraints, and usage patterns, see [API.md](./API.md).
+Example input JSON:
 
-For detailed information on recent improvements (validation, error handling, formatting, cost breakdown), see [IMPROVEMENTS.md](./IMPROVEMENTS.md).
+```json
+{
+  "num_samples": 100000,
+  "min": 0,
+  "max": 100,
+  "probability": {
+    "event_a": 0.3,
+    "event_b": 0.7
+  }
+}
+```
 
-## API Endpoints
+For detailed information on the input format and the service's capabilities, please refer to the [documentation](#Documentation).
 
-### Simulation
-- `POST /simulate` - Run Monte Carlo simulation
+## API Documentation
 
-### Documentation
-- `GET /help` - List all available endpoints and links
-- `GET /docs` - Full API documentation (markdown)
-- `GET /help/interpret` - Guide on interpreting results (percentiles, standard deviation, task stats)
-- `GET /help/examples` - Example requests and responses
-- `GET /help/constraints` - API constraints, limits, and performance notes
+To access the project documentation, send a GET request to `/api/docs`. The documentation includes examples, constraints, and instructions for interpreting the results.
 
-All documentation endpoints return JSON that can be easily consumed by clients.
+## Testing
 
+Unit tests are included in the `tests` directory. To run the tests, use the following command:
+
+```bash
+composer test
+```
+
+## Contributing
+
+Pull requests are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the `LICENSE` file for details.
+
+Enjoy using MonteCarloSimulation! If you have any questions or need further assistance, please don't hesitate to reach out. Happy coding!
