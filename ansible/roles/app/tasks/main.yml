@@ -1,0 +1,98 @@
+---
+- name: Install Nim
+  apt:
+    name: nim
+    state: present
+
+- name: Create project directory
+  file:
+    path: "{{ project_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Copy application files
+  synchronize:
+    src: "{{ playbook_dir }}/../"
+    dest: "{{ project_root }}"
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=ansible"
+      - "--exclude=vendor"
+      - "--exclude=node_modules"
+  # synchronize is better for recursive directory copies than 'copy'
+
+- name: Set permissions for project directory
+  file:
+    path: "{{ project_root }}"
+    owner: www-data
+    group: www-data
+    recurse: yes
+
+- name: Install Composer
+  shell: |
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    creates=/usr/local/bin/composer
+
+- name: Install PHP dependencies
+  composer:
+    command: install
+    working_dir: "{{ project_root }}"
+    no_dev: no
+  become_user: www-data
+
+- name: Compile Nim library
+  command: nim c -d:release --app:lib --out:{{ project_root }}/libmontecarlo_sim.so {{ project_root }}/nim_src/monte_carlo_sim.nim
+  # Running as root is fine for compilation, we fix perms later.
+
+- name: Fix permissions for library and storage
+  file:
+    path: "{{ item }}"
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  with_items:
+    - "{{ project_root }}/libmontecarlo_sim.so"
+
+- name: Create storage directories
+  file:
+    path: "{{ project_root }}/{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0775'
+  with_items:
+    - storage
+    - storage/logs
+    - storage/framework
+    - storage/framework/views
+    - storage/framework/cache
+
+- name: Setup .env file
+  copy:
+    src: "{{ project_root }}/.env.example"
+    dest: "{{ project_root }}/.env"
+    remote_src: yes
+    owner: www-data
+    group: www-data
+    force: no
+
+- name: Enable Nginx site
+  template:
+    src: ../../web/templates/nginx.conf.j2
+    dest: /etc/nginx/sites-available/monte-carlo-api
+  notify: Reload Nginx
+
+- name: Link Nginx site
+  file:
+    src: /etc/nginx/sites-available/monte-carlo-api
+    dest: /etc/nginx/sites-enabled/monte-carlo-api
+    state: link
+  notify: Reload Nginx
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload Nginx

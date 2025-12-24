@@ -1,11 +1,13 @@
- # MonteCarloSimulation Lumen Project
+# MonteCarloSimulation Lumen Project
 
 This repository contains a Lumen PHP framework project implementing a Monte Carlo Simulation service. The project is designed to provide developers with an efficient way to perform complex simulations involving random sampling, probability, and statistics.
 
 ## Prerequisites
 
 - PHP 8.1 or higher
+- PHP FFI Extension (Foreign Function Interface)
 - Composer (for project dependency management)
+- Nim Compiler (to compile the simulation library)
 
 ## Installation
 
@@ -16,11 +18,52 @@ git clone https://github.com/yourusername/montecarlo_simulation.git
 cd montecarlo_simulation
 ```
 
-Next, install the dependencies using Composer:
+### 1. Compile the Nim Library
+The core simulation logic is written in Nim. You must compile it to a shared object (`.so`) file.
+
+```bash
+nim c -d:release --app:lib --out:libmontecarlo_sim.so nim_src/monte_carlo_sim.nim
+```
+
+### 2. Install Dependencies
+Install the PHP dependencies using Composer:
 
 ```bash
 composer install
 ```
+
+### 3. Environment Setup
+Copy the example environment file:
+```bash
+cp .env.example .env
+```
+
+## Deployment via Ansible
+
+This project includes an Ansible playbook for easy deployment to a Ubuntu/Debian server.
+
+### Requirements
+- Ansible installed on your local machine.
+- SSH access to the target server.
+- Target server running Ubuntu 22.04 (recommended).
+
+### Steps
+1. Navigate to the `ansible` directory:
+   ```bash
+   cd ansible
+   ```
+2. Edit `inventory` to set your target server IP (default is `localhost`).
+3. Run the playbook:
+   ```bash
+   ansible-playbook -i inventory playbook.yml
+   ```
+
+This will:
+- Install Nginx, PHP 8.2 (with FFI), and Nim.
+- Set up the web server.
+- Deploy the application code.
+- Compile the Nim library on the server.
+- Set up permissions.
 
 ## Usage
 

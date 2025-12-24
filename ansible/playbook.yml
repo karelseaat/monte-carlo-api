@@ -1,0 +1,10 @@
+---
+- hosts: webservers
+  become: true
+  vars:
+    project_root: /var/www/monte-carlo-api
+    php_version: "8.2"
+
+  roles:
+    - web
+    - app
