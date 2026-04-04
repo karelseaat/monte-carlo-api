@@ -1,5 +1,9 @@
 # Monte Carlo Simulation Service (Lumen + Nim)
 
+[![asciicast](https://asciinema.org/a/69NzoutfYvsBOcyY.svg)](https://asciinema.org/a/69NzoutfYvsBOcyY)
+
+> 🎬 **[Watch the terminal presentation on asciinema](https://asciinema.org/a/69NzoutfYvsBOcyY)**
+
 I built this because I needed a high-performance Monte Carlo simulator for a stats-heavy API, and PHP alone wasn’t fast enough for large-scale sampling. So I wrapped a Nim library with FFI and exposed it via a lightweight REST layer.
 
 **Bottom line**: Handles ~10k simulations/sec on modest hardware (4 vCPU, 8GB RAM), with predictable latency (<50ms p95 for 100k samples).

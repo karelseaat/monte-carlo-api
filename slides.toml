@@ -1,0 +1,94 @@
+title = "Monte Carlo Simulation API"
+theme = "default"
+
+[[slides]]
+type = "title"
+title = "Monte Carlo Simulation API"
+subtitle = "High-performance PHP + Nim simulation service"
+gradient = ["#00FFFF", "#FF00FF"]
+border = "heavy"
+
+[[slides]]
+type = "bullets"
+title = "What is it?"
+items = [
+  "REST API for Monte Carlo simulations",
+  "PHP (Lumen) frontend, Nim core via FFI",
+  "~10k simulations/sec on modest hardware (4 vCPU, 8 GB)",
+  "<50ms p95 latency for 100k samples",
+  "Deployed via Ansible on Ubuntu 22.04",
+]
+
+[[slides]]
+type = "bullets"
+title = "Why PHP + Nim?"
+items = [
+  "PHP alone too slow for large-scale sampling",
+  "Nim compiles to C — near-native performance",
+  "FFI bridge keeps it simple: one shared lib (.so)",
+  "Lumen stays lightweight: just routing + validation",
+]
+
+[[slides]]
+type = "table"
+title = "API Endpoint: POST /simulate"
+headers = ["Field", "Type", "Constraints"]
+rows = [
+  ["numSimulations", "Integer", "1 – 100,000,000"],
+  ["labels[].name",  "String",  "Max 255 chars"],
+  ["labels[].cost",  "Number",  "0 – 1,000,000"],
+  ["labels[].chance","Float",   "0.0 – 1.0"],
+]
+
+[[slides]]
+type = "code"
+title = "Example Request"
+language = "json"
+content = """{
+  "numSimulations": 10000,
+  "labels": [
+    { "name": "Task A", "cost": 50,  "chance": 0.9 },
+    { "name": "Task B", "cost": 80,  "chance": 0.7 }
+  ]
+}"""
+
+[[slides]]
+type = "code"
+title = "Example Response"
+language = "json"
+content = """{
+  "minCost": 0,
+  "maxCost": 130,
+  "averageCost": 85.42,
+  "standardDeviation": 28.5,
+  "percentile50Cost": 85,
+  "percentile90Cost": 120,
+  "mostLikelyCostRange": "110-130"
+}"""
+
+[[slides]]
+type = "chart"
+title = "Simulations / Second (4 vCPU, 8 GB RAM)"
+data = { "PHP only" = 800, "Nim (FFI)" = 10000 }
+
+[[slides]]
+type = "tree"
+title = "Project Structure"
+[slides.structure]
+"monte-carlo-api" = { "nim_src/" = "monte_carlo_sim.nim", "routes/" = "api.php", "tests/" = "Unit + Feature", "ansible/" = "playbook.yml", "libmontecarlo_sim.so" = "(compiled)" }
+
+[[slides]]
+type = "bullets"
+title = "Setup in 3 Steps"
+items = [
+  "1. nim c -d:release --app:lib --out:libmontecarlo_sim.so nim_src/monte_carlo_sim.nim",
+  "2. composer install && cp .env.example .env",
+  "3. ansible-playbook -i inventory playbook.yml",
+]
+
+[[slides]]
+type = "title"
+title = "That's it!"
+subtitle = "MIT License · PRs welcome · Open an issue first for new features"
+gradient = ["#FF00FF", "#00FFFF"]
+border = "round"
