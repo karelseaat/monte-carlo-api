@@ -109,3 +109,7 @@ Runs PHPUnit against `tests/Unit` and `tests/Feature`. Coverage for the Nim brid
 - Don’t touch the Nim code unless you’re comfortable with FFI semantics (e.g., memory lifetime, `ptr` safety).
 
 MIT license. See `LICENSE`.
+
+## More from Karelseaat
+
+For more projects and experiments, visit my GitHub Pages site: [karelseaat.github.io](https://karelseaat.github.io/)
